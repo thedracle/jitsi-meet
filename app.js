@@ -37,8 +37,7 @@ import API from './modules/API/API';
 import UIEvents from './service/UI/UIEvents';
 import getTokenData from "./modules/tokendata/TokenData";
 import translation from "./modules/translation/translation";
-// For remote control testing:
-// import remoteControlController from "./modules/remotecontrol/Controller";
+import remoteControl from "./modules/remotecontrol/remotecontrol";
 
 const ConferenceEvents = JitsiMeetJS.events.conference;
 
@@ -156,6 +155,7 @@ const APP = {
     ConferenceUrl : null,
     connection: null,
     API,
+    remoteControl,
     init () {
         this.initLogging();
         this.keyboardshortcut =
@@ -302,9 +302,11 @@ $(document).ready(function () {
 
     APP.translation.init(settings.getLanguage());
 
-    APP.API.init(APP.tokenData.externalAPISettings);
-    // For remote control testing:
-    // APP.API.init({forceEnable: true});
+    APP.API.init(APP.tokenData.jwt ? {
+        forceEnable: true,
+        enabledEvents: ["video-conference-joined", "video-conference-left",
+            "video-ready-to-close"]
+    } : undefined);
 
     obtainConfigAndInit();
 });
